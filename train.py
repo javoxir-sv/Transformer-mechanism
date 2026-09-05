@@ -124,7 +124,7 @@ def get_ds(config):
 
     # Keep 90% for training and 10% for validation
     train_ds_size = int(0.9 * len(ds_raw))
-    val_ds_size = int(0.1 * len(ds_raw))
+    val_ds_size = len(ds_raw) - train_ds_size
     train_ds_raw, val_ds_raw = random_split(ds_raw, [train_ds_size, val_ds_size])
 
     train_ds = BilingualDataset(train_ds_raw, tokenizer_src, tokenizer_tgt, config['lang_src'], config['lang_tgt'], config['seq_len'])
@@ -174,7 +174,7 @@ def train_model(config):
     global_step = 0
     if config['preload']:
         model_filename = get_weights_file_path(config, config['preload'])
-        pritn(f"Preloading model {model_filename}")
+        print(f"Preloading model {model_filename}")
         state = torch.load(model_filename)
         initial_epoch = state['epoch'] + 1
         optmizer.load_state_dict(state['optmizer_state_dict'])
@@ -183,9 +183,9 @@ def train_model(config):
 
     loss_fn = nn.CrossEntropyLoss(ignore_index=tokenizer_src.token_to_id('[PAD]'), label_smoothing=0.1).to(device)
 
-    for epoch in rnage(initial_epoch, config['num_epochs']):
+    for epoch in range(initial_epoch, config['num_epochs']):
         
-        batch_iterator = tqdm(train_dataloader, desk=f"Processing epoch {epoch:02d}")
+        batch_iterator = tqdm(train_dataloader, desc=f"Processing epoch {epoch:02d}")
         for batch in batch_iterator:
             model.train()
             
@@ -229,7 +229,7 @@ def train_model(config):
         torch.save({
             "epoch": epoch,
             "model_state_dict": model.state_dict(),
-            "optmize_state_dict": optmizer.state_dict(), 
+            "optmizer_state_dict": optmizer.state_dict(), 
             "global_step": global_step
         }, model_filename)
 
