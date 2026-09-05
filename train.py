@@ -28,7 +28,7 @@ def greedy_decode(model, source, source_mask, tokenizer_src, tokenizer_tgt, max_
     # INitialize the decoder input with the sos token
     decoder_input = torch.empty(1, 1).fill_(sos_idx).type_as(source).to(device)
     while True:
-        if decoder_output.size(1) == max_len:
+        if decoder_input.size(1) == max_len:
             break
 
         # Build mask for the target (decoder input)
