@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataloader, Dataset, random_split
+from torch.utils.data import DataLoader, Dataset, random_split
 
 from datasets import load_dataset
 from tokenizers import Tokenizer
@@ -112,7 +112,12 @@ def get_or_build_tokenizer(config, ds, lang):
 
 
 def get_ds(config):
-    ds_raw = load_dataset("opus_books", f"{config["lang_src"]}-{config["lang_tgt"]}", split='trian')
+    #ds_raw = load_dataset("opus_books", f"{config["lang_src"]}-{config["lang_tgt"]}", split='train')
+    ds_raw = load_dataset(
+    "opus_books",
+    f"{config['lang_src']}-{config['lang_tgt']}",
+    split="train"
+)
 
     # Build a tokenizer
     tokenizer_src = get_or_build_tokenizer(config, ds_raw, config['lang_src'])
