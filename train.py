@@ -112,9 +112,8 @@ def get_or_build_tokenizer(config, ds, lang):
 
 
 def get_ds(config):
-    #ds_raw = load_dataset("opus_books", f"{config["lang_src"]}-{config["lang_tgt"]}", split='train')
     ds_raw = load_dataset(
-    "opus_books",
+    "Helsinki-NLP/opus_books",
     f"{config['lang_src']}-{config['lang_tgt']}",
     split="train"
 )
